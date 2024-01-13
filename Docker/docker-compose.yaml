@@ -4,14 +4,14 @@ services:
         image: josevictorps/privacyjava
         ports:
           - "8080:8080"
+        env_file:
+          - secrets/spring_secrets.env
         environment:
-          spring.cassandra.password: cassandra
           spring.cassandra.username: cassandra
           spring.cassandra.contact-points: cassandra
           spring.cassandra.local-datacenter: datacenter1
           spring.cassandra.keyspace-name: test
           spring.elasticsearch.username: elastic
-          spring.elasticsearch.password: el@stic1
           spring.elasticsearch.uris: http://elasticsearch:9200
         networks:
             - privacy-network
@@ -43,13 +43,16 @@ services:
 
     elasticsearch:
       image: docker.elastic.co/elasticsearch/elasticsearch:7.17.6
+      env_file:
+        - secrets/elasticsearch_secrets.env
       environment:
         ELASTIC_USERNAME: elastic
-        ELASTIC_PASSWORD: el@stic1
         discovery.type: "single-node"
         ES_JAVA_OPTS: "-Xms2g -Xmx2g"
         xpack.monitoring.enabled: "true"
         xpack.security.enabled: "true"
+      volumes:
+        - /var/lib/elasticsearch:/usr/share/elasticsearch/data
       networks:
         - privacy-network
       ports:
@@ -60,10 +63,11 @@ services:
       image: docker.elastic.co/kibana/kibana:7.17.6
       ports:
         - "5601:5601"
+      env_file:
+        - secrets/kibana_secrets.env
       environment:
         ELASTICSEARCH_URL: http://elasticsearch:9200
         ELASTICSEARCH_USERNAME: elastic
-        ELASTICSEARCH_PASSWORD: el@stic1
       networks:
         - privacy-network
       depends_on:
