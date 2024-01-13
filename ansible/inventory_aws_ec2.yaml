@@ -1,0 +1,9 @@
+plugin: amazon.aws.aws_ec2
+boto_profile: default
+regions:
+  - us-east-1
+filters:
+  tag:Name: privacy_exam
+  instance-state-name: running
+compose:
+  ansible_host: public_ip_address
