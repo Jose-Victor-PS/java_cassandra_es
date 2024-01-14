@@ -33,15 +33,9 @@ variable "ec2_termination" {
 }
 
 variable "inbound_rules" {
-  type = object({
+  type = list(object({
     port = number
     protocol = string
     description = string
-  })
-
-  default = {
-    port = 22,
-    protocol = "tcp",
-    description = "Allow SSH"
-  }
+  }))
 }

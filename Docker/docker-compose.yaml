@@ -17,29 +17,32 @@ services:
             - privacy-network
         container_name: java-app
         depends_on:
-            cassandra:
-              condition: service_healthy
+            cassandra-load-keyspace:
+              condition: service_completed_successfully
             elasticsearch:
               condition: service_started
             kibana:
               condition: service_started
 
     cassandra:
-        image: cassandra:latest
+        image: cassandra:latest #docker.io/bitnami/cassandra:latest
         container_name: cassandra
-        volumes:
-          - /var/lib/cassandra:/var/lib/cassandra
-          - ./data.cql:/scripts/data.cql
         ports:
             - "9042:9042"
         networks:
             - privacy-network
-        healthcheck:
-          test: [ "CMD", "cqlsh", "--username", "cassandra", "--password", "cassandra", "--keyspace", "test" ]
-          interval: 5s
-          timeout: 10s
-          retries: 3
+        restart: always
 
+    cassandra-load-keyspace:
+      container_name: cassandra-load-keyspace
+      image: cassandra:latest
+      depends_on:
+        - cassandra
+      volumes:
+        - ./schema.cql:/schema.cql
+      command: /bin/bash -c "sleep 60 && echo loading cassandra keyspace && cqlsh cassandra -f /schema.cql"
+      networks:
+        - privacy-network
 
     elasticsearch:
       image: docker.elastic.co/elasticsearch/elasticsearch:7.17.6
@@ -51,8 +54,6 @@ services:
         ES_JAVA_OPTS: "-Xms2g -Xmx2g"
         xpack.monitoring.enabled: "true"
         xpack.security.enabled: "true"
-      volumes:
-        - /var/lib/elasticsearch:/usr/share/elasticsearch/data
       networks:
         - privacy-network
       ports:

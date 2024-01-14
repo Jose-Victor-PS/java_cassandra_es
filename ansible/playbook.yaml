@@ -26,3 +26,35 @@
         name: docker-ce
         state: latest
         update_cache: true
+
+    - name: Create secrets folder
+      file:
+        path: /home/ubuntu/secrets
+        state: directory
+        mode: 0775
+
+    - name: Copy Container Cluster files to server
+      copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        owner: ubuntu
+        group: ubuntu
+        mode: "{{ item.mode }}"
+      loop:
+        - { src: '../Docker/docker-compose.yaml', dest: '/home/ubuntu/', mode: '0664' }
+        - { src: '../Docker/schema.cql', dest: '/home/ubuntu/', mode: '0664' }
+        - { src: '../Docker/secrets/elasticsearch_secrets.env', dest: '/home/ubuntu/secrets', mode: '0400' }
+        - { src: '../Docker/secrets/kibana_secrets.env', dest: '/home/ubuntu/secrets', mode: '0400' }
+        - { src: '../Docker/secrets/spring_secrets.env', dest: '/home/ubuntu/secrets', mode: '0400' }
+        - { src: '../Docker/nonroot.sh', dest: '/home/ubuntu/', mode: '0755' }
+
+    - name: Create Docker group
+      group:
+        name: docker
+        state: present
+    - name: Add main user to Docker group
+      user:
+        name: ubuntu
+        groups: docker
+        append: yes
+    ### DESLIGAR A MAQUINA MANUALMENTE APOS A CONFIGURACAO NON-ROOT DO DOCKER
