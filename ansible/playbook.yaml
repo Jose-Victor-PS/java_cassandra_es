@@ -46,7 +46,6 @@
         - { src: '../Docker/secrets/elasticsearch_secrets.env', dest: '/home/ubuntu/secrets', mode: '0400' }
         - { src: '../Docker/secrets/kibana_secrets.env', dest: '/home/ubuntu/secrets', mode: '0400' }
         - { src: '../Docker/secrets/spring_secrets.env', dest: '/home/ubuntu/secrets', mode: '0400' }
-        - { src: '../Docker/nonroot.sh', dest: '/home/ubuntu/', mode: '0755' }
 
     - name: Create Docker group
       group:

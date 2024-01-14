@@ -4,7 +4,7 @@ Repositório para guardar código de infraestrutura na nuvem, escrito em Terrafo
 ### Terraform
 
 O terraform define uma máquina virtual para a AWS no EC2, com ambiente de desenvolvimento e produção.
- O ambiente dev tem instâncias menores, menos armazenamento e expõe o banco de dados para a internet para testes.
+O ambiente dev tem instâncias menores, menos armazenamento e expõe o banco de dados para a internet para testes.
 O ambiente prod tem instâncias maiores, mais armazenamento e não expõe o banco de dados na internet.
 Apenas a aplicação dentro da instância pode acessá-lo.
 
@@ -37,3 +37,6 @@ A execução completa deste container auxiliar é essencial para o container Jav
 ### Resultados
 ![Cassandra Resultados](docs/cassandra.png?raw=true "Cassandra Resultados")
 ![Kibana Resultados](docs/kibana.png?raw=true "Kibana Resultados")
+
+### Arquitetura
+![Arquitetura Geral](docs/arquitetura.png?raw=true "Arquitetura Geral")
